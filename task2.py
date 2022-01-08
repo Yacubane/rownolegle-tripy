@@ -41,8 +41,8 @@ def calculate_acceleration(star1, star2):
 other_ranks_stars[:rank_stars_count,:] = rank_stars.copy()
 iterations = int(np.ceil(size / 2)) - 1
 for _ in range(iterations):
-    comm.Send([other_ranks_stars, MPI.FLOAT], dest=(rank + 1) % size)
-    comm.Send([other_ranks_accelerations, MPI.FLOAT], dest=(rank + 1) % size)
+    comm.Isend([other_ranks_stars, MPI.FLOAT], dest=(rank + 1) % size)
+    comm.Isend([other_ranks_accelerations, MPI.FLOAT], dest=(rank + 1) % size)
     comm.Recv([other_ranks_stars, MPI.FLOAT], source=(rank - 1) % size)
     comm.Recv([other_ranks_accelerations, MPI.FLOAT], source=(rank - 1) % size)
     for i, j in itertools.product(range(rank_stars_count), range(rank_stars_count)):
@@ -51,12 +51,12 @@ for _ in range(iterations):
         other_ranks_accelerations[j, :] += star2accel
 
 if size % 2 == 0:
-    comm.Send([other_ranks_stars, MPI.FLOAT], dest=(rank + 1) % size)
+    comm.Isend([other_ranks_stars, MPI.FLOAT], dest=(rank + 1) % size)
     comm.Recv([other_ranks_stars, MPI.FLOAT], source=(rank - 1) % size)
     for i, j in itertools.product(range(rank_stars_count), range(rank_stars_count)):
         rank_accelerations[i,:] += calculate_acceleration(rank_stars[i, :], other_ranks_stars[j, :])[0]
 
-comm.Send([other_ranks_accelerations, MPI.FLOAT], dest=(rank - iterations) % size)
+comm.Isend([other_ranks_accelerations, MPI.FLOAT], dest=(rank - iterations) % size)
 comm.Recv([other_ranks_accelerations, MPI.FLOAT], source=(rank + iterations) % size)
 
 
@@ -68,7 +68,7 @@ for i, j in itertools.product(range(rank_stars_count), range(rank_stars_count)):
 rank_accelerations[:,:] += other_ranks_accelerations[:rank_stars_count, :]
 
 if rank != 0:
-    comm.Send([rank_accelerations, MPI.FLOAT], dest=0)
+    comm.Isend([rank_accelerations, MPI.FLOAT], dest=0)
 else:
     accelerations = np.empty((stars_count, 3), dtype=np.float32)
     accelerations[rank_stars_range[0]:rank_stars_range[1], :] = rank_accelerations

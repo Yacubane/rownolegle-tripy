@@ -37,7 +37,7 @@ def calculate_acceleration(star1, star2):
 
 other_ranks_stars[:rank_stars_count,:] = rank_stars.copy()
 for _ in range(size - 1):
-    comm.Send([other_ranks_stars, MPI.FLOAT], dest=(rank + 1) % size)
+    comm.Isend([other_ranks_stars, MPI.FLOAT], dest=(rank + 1) % size)
     comm.Recv([other_ranks_stars, MPI.FLOAT], source=(rank - 1) % size)
     for i, j in itertools.product(range(rank_stars_count), range(rank_stars_count)):
         rank_accelerations[i, :] += calculate_acceleration(rank_stars[i, :], other_ranks_stars[j, :])
@@ -48,7 +48,7 @@ for i, j in itertools.product(range(rank_stars_count), range(rank_stars_count)):
     rank_accelerations[i,:] += calculate_acceleration(rank_stars[i, :], rank_stars[j, :])
 
 if rank != 0:
-    comm.Send([rank_accelerations, MPI.FLOAT], dest=0)
+    comm.Isend([rank_accelerations, MPI.FLOAT], dest=0)
 else:
     accelerations = np.empty((stars_count, 3), dtype=np.float32)
     accelerations[rank_stars_range[0]:rank_stars_range[1], :] = rank_accelerations
@@ -61,5 +61,6 @@ else:
         accelerations[received_stars_range[0]:received_stars_range[1],:] = received_accelerations[:received_stars_count, :]
 
     end_time = time.time()
-    print(accelerations)
-    print(f"Time : {end_time-start_time}")
+    if is_debug:
+        print(accelerations)
+    print(end_time-start_time)
