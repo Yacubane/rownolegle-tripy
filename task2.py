@@ -81,5 +81,6 @@ else:
         accelerations[received_stars_range[0]:received_stars_range[1],:] = received_accelerations[:received_stars_count, :]
 
     end_time = time.time()
-    print(accelerations)
-    print(f"Time : {end_time-start_time}")
+    if is_debug:
+        print(accelerations)
+    print(end_time-start_time)
