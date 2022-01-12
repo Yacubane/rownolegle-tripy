@@ -16,7 +16,7 @@ echo "program;thread_num;stars_count;time" >> $report_file
 for i in $(seq 1 $test_iterations); do
     for thread_num in "${thread_nums[@]}"; do
         for stars_count in "${stars_counts[@]}"; do
-            command="mpirun -np $thread_num ./task3.py $stars_count 0.05 1000"
+            command="mpirun -np $thread_num ./task3_zeus.py $stars_count 0.05 1000"
             echo $command
             time=$($command)
             printf "%s;%d;%d;%lf\n" $program $thread_num $stars_count $time >> $report_file
