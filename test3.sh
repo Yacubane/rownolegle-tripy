@@ -19,7 +19,7 @@ for i in $(seq 1 $test_iterations); do
             command="mpirun -np $thread_num ./task3_zeus.py $stars_count 0.05 1000"
             echo $command
             time=$($command)
-            printf "%s;%d;%d;%s\n" $program $thread_num $stars_count $time >> $report_file
+            printf "%s;%d;%d;%s\n" "./task3_zeus.py" $thread_num $stars_count $time >> $report_file
         done
     done
 done
