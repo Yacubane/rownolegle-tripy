@@ -105,31 +105,31 @@ for i in range(iterations):
 frames = np.asarray(frames)
 
 
-# if rank == 0:
-#     fig = plt.figure()
-#     ax = fig.add_subplot(projection='3d')
-#     limit = 1
-#     ax.set_xlim3d([-limit, limit])
-#     ax.set_xlabel('X')
-#     ax.set_ylim3d([-limit, limit])
-#     ax.set_ylabel('Y')
-#     ax.set_zlim3d([-limit, limit])
-#     ax.set_zlabel('Z')
+if rank == 0:
+    fig = plt.figure()
+    ax = fig.add_subplot(projection='3d')
+    limit = 1
+    ax.set_xlim3d([-limit, limit])
+    ax.set_xlabel('X')
+    ax.set_ylim3d([-limit, limit])
+    ax.set_ylabel('Y')
+    ax.set_zlim3d([-limit, limit])
+    ax.set_zlabel('Z')
 
-#     def update(num, datas, lines):
-#         for i, data in enumerate(datas):
-#             lines[i].set_data(data[:2, :num])
-#             lines[i].set_3d_properties(data[2, :num])
+    def update(num, datas, lines):
+        for i, data in enumerate(datas):
+            lines[i].set_data(data[:2, :num])
+            lines[i].set_3d_properties(data[2, :num])
 
-#     stars_pos_frames = np.moveaxis(frames.T, 1, 0)
-#     lines = [ax.plot([], [], [])[0] for _ in range(stars_count)]
-#     anim = animation.FuncAnimation(
-#                 fig,
-#                 update,
-#                 len(frames),
-#                 fargs=(stars_pos_frames, lines),
-#                 interval=1,
-#                 blit=False,
-#                 repeat=True)
+    stars_pos_frames = np.moveaxis(frames.T, 1, 0)
+    lines = [ax.plot([], [], [])[0] for _ in range(stars_count)]
+    anim = animation.FuncAnimation(
+                fig,
+                update,
+                len(frames),
+                fargs=(stars_pos_frames, lines),
+                interval=1,
+                blit=False,
+                repeat=True)
 
-#     plt.show()
+    plt.show()
